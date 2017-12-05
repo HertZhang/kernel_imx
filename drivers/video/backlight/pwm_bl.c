@@ -24,7 +24,7 @@
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
 
-#define COMMANDLINE_FINDER
+//#define COMMANDLINE_FINDER
 #ifdef COMMANDLINE_FINDER
 extern char *saved_command_line;
 #define PWM_BACKLIGHT_GPIO_ACTIVE_LOW	1

@@ -15,14 +15,16 @@
 	MX6DL_PAD_NANDF_D6__GPIO_2_6,
 	MX6DL_PAD_NANDF_D7__GPIO_2_7
  */
-#define GPIO_IN0_mio				IMX_GPIO_NR(1, 15)
-#define GPIO_IN1_mio				IMX_GPIO_NR(1, 14)
-#define GPIO_IN2_mio				IMX_GPIO_NR(1, 13)
-#define GPIO_IN3_mio				IMX_GPIO_NR(1, 12)
-#define GPIO_OUT0_mio				IMX_GPIO_NR(2, 4)
-#define GPIO_OUT1_mio				IMX_GPIO_NR(2, 5)
-#define GPIO_OUT2_mio				IMX_GPIO_NR(2, 6)
-#define GPIO_OUT3_mio				IMX_GPIO_NR(2, 7)
+
+#define GPIO_U29_2OE				IMX_GPIO_NR(3, 14)
+#define GPIO_IN0_mio				IMX_GPIO_NR(1, 11)
+#define GPIO_IN1_mio				IMX_GPIO_NR(1, 10)
+#define GPIO_IN2_mio				IMX_GPIO_NR(1, 15)
+#define GPIO_IN3_mio				IMX_GPIO_NR(1, 14)
+#define GPIO_OUT0_mio				IMX_GPIO_NR(1, 13)
+#define GPIO_OUT1_mio				IMX_GPIO_NR(1, 12)
+#define GPIO_OUT2_mio				IMX_GPIO_NR(2, 2)
+#define GPIO_OUT3_mio				IMX_GPIO_NR(2, 3)
 
 #define GPIO_IN0_CMD_mio			66
 #define GPIO_IN1_CMD_mio			67
@@ -38,6 +40,13 @@ static int gpio_mio_open(struct inode *inode, struct file *file)
 {
     //printk("gpio mio open.\n")
 	int ret;
+
+	ret = gpio_request(GPIO_U29_2OE, "gpio_u29_2oe");
+	if ( ret ) {
+        printk("get gpio_u29_2oe gpio FAILED!\n");
+		return ret;
+	}
+
 	ret = gpio_request(GPIO_IN0_mio, "gpio_in0_mio");
 	if ( ret ) {
         printk("get gpio_in0_mio gpio FAILED!\n");
@@ -86,6 +95,8 @@ static int gpio_mio_open(struct inode *inode, struct file *file)
 		return ret;
 	}
 
+	gpio_direction_output(GPIO_U29_2OE, 0);
+
 	gpio_direction_input(GPIO_IN0_mio);
 	gpio_direction_input(GPIO_IN1_mio);
 	gpio_direction_input(GPIO_IN2_mio);
@@ -121,6 +132,8 @@ static int gpio_mio_close(struct inode *inode, struct file *file)
 	gpio_free(GPIO_OUT1_mio);
 	gpio_free(GPIO_OUT2_mio);
 	gpio_free(GPIO_OUT3_mio);
+
+	gpio_free(GPIO_U29_2OE);
 
     return 0;
 }
@@ -201,7 +214,6 @@ int __init gpio_mio_init(void)
 void __exit gpio_mio_exit(void)
 {
     misc_deregister(&gpio_misc);
-
 }
 
 module_init(gpio_mio_init);

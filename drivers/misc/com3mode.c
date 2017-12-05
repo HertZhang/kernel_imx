@@ -4,8 +4,8 @@
 #include <linux/miscdevice.h>
 //#define IMX_GPIO_NR(bank, nr)		(((bank) - 1) * 32 + (nr))
 
-#define SABRESD_COM3_MODE_0	   IMX_GPIO_NR(1, 4)
-#define SABRESD_COM3_MODE_1	   IMX_GPIO_NR(1, 5)
+#define SABRESD_COM3_MODE_0	   IMX_GPIO_NR(6, 11)
+#define SABRESD_COM3_MODE_1	   IMX_GPIO_NR(6, 14)
 #define SABRESD_COM3_TERM	   IMX_GPIO_NR(7, 11)
 
 #define TEST_RS232_CMD_APLEX          66

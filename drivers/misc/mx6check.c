@@ -22,7 +22,7 @@ long mx6check_ioctl(struct file * file, unsigned int cmd, unsigned long arg)
 	
 	switch (cmd) {
 		case MX6CHECK_CMD_APLEX : 
-			ret = 7112;
+			ret = 7815;
 			//printk("test mx6check ret = %d\n", ret);
 			break;
 		default :
