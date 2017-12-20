@@ -12,7 +12,8 @@
 #define TEST_RS485_CMD_APLEX          67
 #define TEST_RS422_CMD_APLEX          68
 #define TEST_LOOPBACK_CMD_APLEX       69
-
+#define TEST_RS485_TERM_CMD_APLEX     70
+#define TEST_RS422_TERM_CMD_APLEX     71
 
 static int test_open(struct inode *inode, struct file *file)
 {
@@ -55,7 +56,7 @@ static long test_ioctl(struct file * file, unsigned int cmd, unsigned long arg) 
 		case TEST_RS422_CMD_APLEX :
 			gpio_direction_output(SABRESD_COM3_MODE_0, 1);
 			gpio_direction_output(SABRESD_COM3_MODE_1, 1);
-			gpio_direction_output(SABRESD_COM3_TERM, 1);
+			gpio_direction_output(SABRESD_COM3_TERM, 0);
 			//printk("TEST_RS422_CMD_APLEX");
 			break;
 		case TEST_LOOPBACK_CMD_APLEX :
@@ -63,6 +64,18 @@ static long test_ioctl(struct file * file, unsigned int cmd, unsigned long arg) 
 			gpio_direction_output(SABRESD_COM3_MODE_1, 0);
 			gpio_direction_output(SABRESD_COM3_TERM, 0);
 			//printk("TEST_LOOPBACK_CMD_APLEX");
+			break;
+		case TEST_RS485_TERM_CMD_APLEX :
+			gpio_direction_output(SABRESD_COM3_MODE_0, 0);
+			gpio_direction_output(SABRESD_COM3_MODE_1, 1);
+			gpio_direction_output(SABRESD_COM3_TERM, 1);
+			//printk("TEST_RS485_TERM_CMD_APLEX");
+			break;
+		case TEST_RS422_TERM_CMD_APLEX :
+			gpio_direction_output(SABRESD_COM3_MODE_0, 1);
+			gpio_direction_output(SABRESD_COM3_MODE_1, 1);
+			gpio_direction_output(SABRESD_COM3_TERM, 1);
+			//printk("TEST_RS422_TERM_CMD_APLEX");
 			break;
 		default:
 			printk("RS232/RS485/RS422 control error.\n");

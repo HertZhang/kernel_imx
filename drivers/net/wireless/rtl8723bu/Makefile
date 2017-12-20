@@ -14,7 +14,7 @@ EXTRA_CFLAGS += -Wno-unused-parameter
 EXTRA_CFLAGS += -Wno-unused-function
 EXTRA_CFLAGS += -Wno-unused
 #EXTRA_CFLAGS += -Wno-uninitialized
-#EXTRA_CFLAGS += -Wno-error=date-time	# Fix compile error on gcc 4.9 and later
+EXTRA_CFLAGS += -Wno-error=date-time	# Fix compile error on gcc 4.9 and later
 
 EXTRA_CFLAGS += -I$(src)/include
 EXTRA_CFLAGS += -I$(src)/hal/phydm
@@ -75,7 +75,7 @@ CONFIG_RTW_SDIO_PM_KEEP_POWER = y
 ###################### MP HW TX MODE FOR VHT #######################
 CONFIG_MP_VHT_HW_TX_MODE = n
 ###################### Platform Related #######################
-CONFIG_PLATFORM_I386_PC = y
+CONFIG_PLATFORM_I386_PC = n
 CONFIG_PLATFORM_ANDROID_X86 = n
 CONFIG_PLATFORM_ANDROID_INTEL_X86 = n
 CONFIG_PLATFORM_JB_X86 = n
@@ -126,6 +126,7 @@ CONFIG_PLATFORM_MOZART = n
 CONFIG_PLATFORM_RTK119X = n
 CONFIG_PLATFORM_NOVATEK_NT72668 = n
 CONFIG_PLATFORM_HISILICON = n
+CONFIG_PLATFORM_ARM_IMX6 = y
 ###############################################################
 
 CONFIG_DRVEXT_MODULE = n
@@ -1493,6 +1494,17 @@ MODULE_NAME := rtl8192eu
 ifeq ($(KSRC),)
        KSRC := ../../../../../../kernel/linux-3.4.y
 endif
+endif
+
+ifeq ($(CONFIG_PLATFORM_ARM_IMX6), y)
+EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN -DCONFIG_PLATFORM_ANDROID
+EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
+EXTRA_CFLAGS += -DCONFIG_RADIO_WORK -DCONFIG_CONCURRENT_MODE
+#EXTRA_CFLAGS += -DRTW_ENABLE_WIFI_CONTROL_FUNC -DRTW_SUPPORT_PLATFORM_SHUTDOWN
+ARCH := arm
+CROSS_COMPILE := /home/desk/myandroid/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-
+KSRC := /home/desk/myandroid/kernel_imx
+MODULE_NAME := wlan
 endif
 
 # Platform setting

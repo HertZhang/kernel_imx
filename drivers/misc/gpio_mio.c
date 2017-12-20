@@ -2,6 +2,8 @@
 #include <linux/fs.h>
 #include <linux/gpio.h>
 #include <linux/miscdevice.h>
+#include <linux/delay.h>
+#include <linux/timer.h>
 //#include <mach/iomux-mx6dl.h>
 //#define IMX_GPIO_NR(bank, nr)		(((bank) - 1) * 32 + (nr))
 /**
@@ -17,6 +19,8 @@
  */
 
 #define GPIO_U29_2OE				IMX_GPIO_NR(3, 14)
+#define GPIO_WIFI_EN				IMX_GPIO_NR(7, 1)
+
 #define GPIO_IN0_mio				IMX_GPIO_NR(1, 11)
 #define GPIO_IN1_mio				IMX_GPIO_NR(1, 10)
 #define GPIO_IN2_mio				IMX_GPIO_NR(1, 15)
@@ -35,17 +39,12 @@
 #define GPIO_OUT2_CMD_mio			72
 #define GPIO_OUT3_CMD_mio			73
 
+struct timer_list delay_timer;
 
 static int gpio_mio_open(struct inode *inode, struct file *file)
 {
     //printk("gpio mio open.\n")
 	int ret;
-
-	ret = gpio_request(GPIO_U29_2OE, "gpio_u29_2oe");
-	if ( ret ) {
-        printk("get gpio_u29_2oe gpio FAILED!\n");
-		return ret;
-	}
 
 	ret = gpio_request(GPIO_IN0_mio, "gpio_in0_mio");
 	if ( ret ) {
@@ -94,8 +93,6 @@ static int gpio_mio_open(struct inode *inode, struct file *file)
         printk("get gpio_out3_mio gpio FAILED!\n");
 		return ret;
 	}
-
-	gpio_direction_output(GPIO_U29_2OE, 0);
 
 	gpio_direction_input(GPIO_IN0_mio);
 	gpio_direction_input(GPIO_IN1_mio);
@@ -198,6 +195,12 @@ struct miscdevice gpio_misc = {
     .fops   = &gpio_fops,
 };
 
+void delay_timer_handler(unsigned long data)
+{
+	gpio_direction_output(GPIO_U29_2OE, 0);
+	gpio_set_value(GPIO_WIFI_EN, 1);
+}
+
 int __init gpio_mio_init(void)
 {
 	int ret;
@@ -207,6 +210,25 @@ int __init gpio_mio_init(void)
 		printk("gpio_misc_register FAILED!\n");
 	else 
 		printk("gpio mio has register\n");
+
+	ret = gpio_request(GPIO_U29_2OE, "gpio_u29_2oe");
+	if ( ret ) {
+        printk("get gpio_u29_2oe gpio FAILED!\n");
+		return ret;
+	}
+	gpio_direction_output(GPIO_U29_2OE, 1);
+
+	ret = gpio_request(GPIO_WIFI_EN, "gpio_wifi_en");
+	if ( ret ) {
+        printk("get gpio_wifi_en gpio FAILED!\n");
+		return ret;
+	}
+	gpio_direction_output(GPIO_WIFI_EN, 0);
+
+	init_timer(&delay_timer);
+	delay_timer.function = &delay_timer_handler;
+	delay_timer.expires  = jiffies + 4*HZ;
+	add_timer(&delay_timer);
 
 	return ret;
 }
