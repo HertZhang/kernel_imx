@@ -196,14 +196,14 @@
 			label = "Backlight Up";
 			gpios = <&gpio1 17 1>;
 			gpio-key;
-			linux,code = <KEY_F3>;
+			linux,code = <KEY_BRIGHTNESSUP>;
 		};
 
 		backlight-down {
 			label = "Backlight Down";
 			gpios = <&gpio1 19 1>;
 			gpio-key;
-			linux,code = <KEY_F4>;
+			linux,code = <KEY_BRIGHTNESSDOWN>;
 		};
 	};
 #endif
@@ -295,7 +295,7 @@
 		status = "okay";
 	};
 
-#if 1
+#if 0
 	pwm-backlight {
 		compatible = "pwm-backlight";
  		pwms = <&pwm1 0 50000>;
@@ -319,7 +319,6 @@
 	pwm-backlight {
 		compatible = "pwm-backlight";
 		pwms = <&pwm1 0 5000000>;	//default pwm1
-		//reg = <0x0>;
 		brightness-levels = <
 			0 /*1   2   3   4   5   6   7   8   9
 			10  11  12  13  14  15  16  17  18  19*/
